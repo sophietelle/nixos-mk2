@@ -1,7 +1,9 @@
 ## sophietelle nixos flake
 
 my experimental playground and my configuration that i daily-drive :)
+
 this config might not fit you and honestly, i don't even care! this is made public just for other people to maybe copy something out of it or fork this config and modify it for their needs.
+
 it doesn't even have a bar and i will be experimenting with quickshell to create something better than just some disgusting strip of information :)
 
 ## current setup
