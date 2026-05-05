@@ -73,6 +73,12 @@
       enable = true;
       useUWSM = true;
     })
+    (import ../presets/obs.nix {
+      enable = true;
+      useCUDA = true;
+      useVirtualCamera = true;
+      plugins = [ "wlrobs" "obs-vaapi" "obs-vkcapture" ];
+    })
 
     (import ./stylix.nix)
 
@@ -110,11 +116,6 @@
           useDaemon = true;
         })
         (import ../presets/home/swaybg.nix { wallpaper = ../wallpapers/v3.png; })
-        (import ../presets/home/obs.nix {
-          enable = true;
-          useCUDA = true;
-          plugins = [ "wlrobs" "obs-vaapi" "obs-vkcapture" ];
-        })
 
         ({ inputs, ... }: {
           stylix.targets = {
