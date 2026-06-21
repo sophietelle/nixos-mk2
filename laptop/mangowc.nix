@@ -48,6 +48,8 @@ in
       fadein_begin_opacity=0;
       fadeout_begin_opacity=0.5;
 
+      allow_tearing = 2;
+
       focuscolor = "0x4d4e51ff";
       bordercolor = "0x00000000";
       urgentcolor = "0xeb4056ff";

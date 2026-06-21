@@ -38,8 +38,8 @@
         name = "Iosevka";
       };
       sansSerif = {
-        package = pkgs.liberation_ttf;
-        name = "Liberation Serif";
+        package = pkgs.noto-fonts;
+        name = "Noto Sans";
       };
       serif = config.stylix.fonts.sansSerif;
       emoji = {
@@ -47,13 +47,15 @@
         name = "Noto Color Emoji";
       };
       sizes = {
-        applications = 12;
-        desktop = 12;
-        popups = 12;
+        applications = 10;
+        desktop = 10;
+        popups = 10;
         terminal = 12;
       };
     };
 
     polarity = "dark";
   };
+
+  config.fonts.packages = with pkgs; [ noto-fonts-cjk-sans ];
 })

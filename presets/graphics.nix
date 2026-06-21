@@ -3,7 +3,7 @@
   nvidia ? false,
   disablePrime ? false,
   enableNvidiaModesetting ? false,
-}: { config, lib, ... }: {
+}: { pkgs, config, lib, ... }: {
   hardware.graphics = lib.mkIf enable {
     enable = true;
     enable32Bit = true;

@@ -1,7 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -15,6 +14,11 @@
 
     mango = {
       url = "github:mangowm/mango?tag=v0.12.9";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    helium = {
+      url = "github:schembriaiden/helium-browser-nix-flake/280a3440288256e54448221860fe89e82bfcfca0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

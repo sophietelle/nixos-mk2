@@ -14,20 +14,63 @@
       allowUnfree = true;
     })
 
-    ({ pkgs, ... }: {
+    ({ config, pkgs, lib, ... }: {
       environment.systemPackages = with pkgs; [
         neovim wget curl git gh zip unzip
+        python3 bun
       ];
 
+      programs.throne = {
+        enable = true;
+        tunMode = {
+          enable = true;
+          setuid = true;
+        };
+      };
+
+      hardware.ledger.enable = true;
       boot.kernelPackages = pkgs.linuxPackages_zen;
+
+      # ---
 
       virtualisation.waydroid = {
         enable = true;
         package = pkgs.waydroid-nftables;
       };
 
-      hardware.opentabletdriver.enable = true;
+      networking.firewall.trustedInterfaces = [ "waydroid0" ];
+      boot.kernel.sysctl = { "net.ipv4.ip_forward" = 1; "net.ipv4.conf.all.forwarding" = 1; "net.ipv6.conf.all.forwarding" = 1; };
+
+      # ---
+
+      services.sunshine = {
+        enable = true;
+        autoStart = true;
+      };
+
+      networking.networkmanager.wifi.powersave = false;
+      networking.firewall.allowedUDPPorts = [ 67 68 47998 47999 48000 ];
+      networking.firewall.allowedTCPPorts = [ 47984 47989 47990 48010 ];
+      networking.nftables.enable = true;
+
+      networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
+
+      # ---
+
+      services.gvfs.enable = true; # Trash folder
+      programs.gphoto2.enable = true; # Camera access
+      services.tumbler.enable = true; # Thumbnails
+      programs.xfconf.enable = true; # Explorer preferences
+
+      # ---
+
       programs.nix-ld.enable = true;
+      stylix.targets.chromium.colors.enable = false;
+
+      virtualisation.podman.enable = true;
+
+      security.rtkit.enable = true;
+      boot.kernel.sysctl."kernel.sched_rt_runtime_us" = -1;
     })
 
     (import ../presets/boot.nix {
@@ -83,7 +126,11 @@
     (import ./stylix.nix)
 
     ({ pkgs, lib, inputs, ... }: {
-      nixpkgs.overlays = [ inputs.ida-pro-overlay.overlays.default ];
+      nixpkgs.overlays = [
+        inputs.ida-pro-overlay.overlays.default
+        inputs.helium.overlays.default
+      ];
+
       environment.systemPackages = [
         (pkgs.ida-pro.overrideAttrs (old: {
           installPhase = lib.replaceStrings
@@ -125,19 +172,19 @@
 
           programs = {
             home-manager.enable = true;
-            firefox.enable = true;
+            # firefox.enable = true;
           };
-
-          programs.zed-editor.package = inputs.nixpkgs-master.legacyPackages.x86_64-linux.zed-editor;
         })
       ];
 
       extraPackages = pkgs: with pkgs; [
         android-tools scrcpy
         steam telegram-desktop
-        bun python3
         spotify mpv
         thunar thunar-archive-plugin
+        helium
+        osu-lazer-bin
+        imv
 
         (prismlauncher.override {
           jdks = [ zulu8 zulu21 ];

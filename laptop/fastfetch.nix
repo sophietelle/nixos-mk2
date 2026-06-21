@@ -2,21 +2,25 @@
   programs.fastfetch = {
     enable = true;
     settings = {
+      logo = {
+        type = "none";
+      };
+      display = {
+        separator = " ";
+        key.paddingLeft = 1;
+      };
       modules = [
-        "title"
-        "separator"
         "os"
         "kernel"
-        "packages"
-        "shell"
         "wm"
         "terminal"
-        "display"
+        {
+          type = "display";
+          key = "Display {index}";
+        }
         "cpu"
         "gpu"
         "memory"
-        "break"
-        "colors"
       ];
     };
   };

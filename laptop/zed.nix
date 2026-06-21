@@ -20,8 +20,8 @@
       buffer_font_weight = 600;
       buffer_font_size = 16;
 
-      ui_font_family = "Liberation Serif";
-      ui_font_size = 17;
+      ui_font_family = "Noto Sans";
+      ui_font_size = 15;
 
       active_pane_modifiers = { border_size = 0; inactive_opacity = 0.8; };
 

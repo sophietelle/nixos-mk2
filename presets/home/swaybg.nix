@@ -11,7 +11,7 @@
     };
 
     Service = {
-      ExecStart = lib.getExe pkgs.swaybg + " --image ${toString wallpaper} --mode ${mode}";
+      ExecStart = lib.getExe pkgs.swaybg + " --image ${wallpaper} --mode ${mode}";
       Restart = "on-failure";
     };
 
