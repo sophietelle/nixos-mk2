@@ -1,22 +1,12 @@
 {
   enable ? false,
-  useUWSM ? false,
 }: { config, inputs, pkgs, lib, ... }: let
   pkg = inputs.mango.packages.${pkgs.stdenv.hostPlatform.system}.mango;
 in {
   config = lib.mkIf enable {
     environment.systemPackages = [ pkg ];
 
-    programs.uwsm = lib.mkIf useUWSM {
-      enable = lib.mkDefault true;
-      waylandCompositors = {
-        mangowc = {
-          prettyName = "MangoWC";
-          comment = "MangoWC compositor managed by UWSM";
-          binPath = lib.getExe pkg;
-        };
-      };
-    };
+    services.displayManager.sessionPackages = [ pkg ];
 
     xdg.portal = {
       enable = lib.mkDefault true;

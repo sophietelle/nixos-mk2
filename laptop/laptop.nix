@@ -114,7 +114,6 @@
     })
     (import ../presets/mangowc.nix {
       enable = true;
-      useUWSM = true;
     })
     (import ../presets/obs.nix {
       enable = true;
@@ -158,12 +157,6 @@
         ./fuzzel.nix
         ./zed.nix
 
-        (import ../presets/home/alacritty.nix {
-          enable = true;
-          useDaemon = true;
-        })
-        (import ../presets/home/swaybg.nix { wallpaper = ../wallpapers/v3.png; })
-
         ({ inputs, ... }: {
           stylix.targets = {
             zed.enable = false;
@@ -172,6 +165,7 @@
 
           programs = {
             home-manager.enable = true;
+            alacritty.enable = true;
             # firefox.enable = true;
           };
         })

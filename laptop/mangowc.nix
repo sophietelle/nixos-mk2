@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
   mod = "SUPER";
 
-  terminal = "alacritty msg create-window";
+  terminal = "alacritty";
   explorer = "thunar";
   launcher = "fuzzel";
 
@@ -17,6 +17,10 @@ in
 
   wayland.windowManager.mango = {
     enable = true;
+
+    autostart_sh = ''
+      ${lib.getExe pkgs.swaybg} --image ${../wallpapers/v3.png} --mode fit &
+    '';
 
     settings = {
       sloppyfocus = true;
