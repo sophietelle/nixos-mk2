@@ -51,7 +51,6 @@
       networking.networkmanager.wifi.powersave = false;
       networking.firewall.allowedUDPPorts = [ 67 68 47998 47999 48000 ];
       networking.firewall.allowedTCPPorts = [ 47984 47989 47990 48010 ];
-      networking.nftables.enable = true;
 
       networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
 
@@ -71,6 +70,13 @@
 
       security.rtkit.enable = true;
       boot.kernel.sysctl."kernel.sched_rt_runtime_us" = -1;
+
+      # ---
+
+      boot.kernelParams = [ "8250.nr_uarts=0" ];
+      systemd.units."dev-tpm0.device".wantedBy = lib.mkForce [];
+      systemd.units."waydroid-container.service".wantedBy = lib.mkForce [];
+      boot.kernelModules = lib.mkForce { "nvidia_uvm" = false; };
     })
 
     (import ../presets/boot.nix {
@@ -85,7 +91,7 @@
     (import ../presets/power-management.nix {
       enablePPD = true;
       enableUpower = true;
-      enablePowertopDaemon = true;
+      enablePowertopDaemon = false;
       autoSuspendTimeout = 60;
     })
     (import ../presets/display.nix {

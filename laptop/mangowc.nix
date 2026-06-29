@@ -40,8 +40,8 @@ in
       zoom_initial_ratio=0.9;
       zoom_end_ratio=0.95;
 
-      animation_curve_open="0.175,0.885,0.32,1.0";
-      animation_curve_close="0.4,0.0,1.0,1.0";
+      # animation_curve_open="0.175,0.885,0.32,1.0";
+      # animation_curve_close="0.4,0.0,1.0,1.0";
 
       animation_duration_open=150;
       animation_duration_move=150;
