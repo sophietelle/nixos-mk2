@@ -13,7 +13,7 @@
     };
 
     mango = {
-      url = "github:mangowm/mango?tag=v0.12.9";
+      url = "github:mangowm/mango?tag=v0.14.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
