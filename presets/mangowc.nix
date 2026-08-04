@@ -18,7 +18,6 @@ in {
           ];
           # except those
           "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
-          "org.freedesktop.impl.portal.ScreenCast" = ["wlr"];
           "org.freedesktop.impl.portal.ScreenShot" = ["wlr"];
 
           # wlr does not have this interface

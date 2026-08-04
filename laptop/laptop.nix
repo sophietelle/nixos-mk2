@@ -28,8 +28,11 @@
         };
       };
 
+      services.usbmuxd.enable = true;
+
+      hardware.opentabletdriver.enable = true;
       hardware.ledger.enable = true;
-      boot.kernelPackages = pkgs.linuxPackages_zen;
+      boot.kernelPackages = pkgs.linuxPackages_xanmod;
 
       # ---
 
@@ -48,11 +51,14 @@
         autoStart = true;
       };
 
+      services.openssh = {
+        enable = true;
+        openFirewall = true;
+      };
+
       networking.networkmanager.wifi.powersave = false;
       networking.firewall.allowedUDPPorts = [ 67 68 47998 47999 48000 ];
-      networking.firewall.allowedTCPPorts = [ 47984 47989 47990 48010 ];
-
-      networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
+      networking.firewall.allowedTCPPorts = [ 53317 47984 47989 47990 48010 ];
 
       # ---
 
@@ -73,10 +79,10 @@
 
       # ---
 
+
       boot.kernelParams = [ "8250.nr_uarts=0" ];
       systemd.units."dev-tpm0.device".wantedBy = lib.mkForce [];
       systemd.units."waydroid-container.service".wantedBy = lib.mkForce [];
-      boot.kernelModules = lib.mkForce { "nvidia_uvm" = false; };
     })
 
     (import ../presets/boot.nix {
@@ -107,7 +113,7 @@
       seamlessBoot = true;
     })
     (import ../presets/doas.nix {
-      replaceSudo = true;
+      replaceSudo = false;
       allowWheel = true;
       keepEnv = true;
       noPass = true;
@@ -115,8 +121,8 @@
     (import ../presets/graphics.nix {
       enable = true;
       nvidia = true;
-      disablePrime = true;
-      enableNvidiaModesetting = false;
+      disablePrime = false;
+      enableNvidiaModesetting = true;
     })
     (import ../presets/mangowc.nix {
       enable = true;

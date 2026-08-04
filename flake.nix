@@ -18,7 +18,7 @@
     };
 
     helium = {
-      url = "github:schembriaiden/helium-browser-nix-flake/280a3440288256e54448221860fe89e82bfcfca0";
+      url = "github:schembriaiden/helium-browser-nix-flake/52e6bfd6e6b5eaab2e96095f7d936e5bf6a72f24";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -27,7 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
   outputs = { self, nixpkgs, ... } @ inputs: {
     nixosConfigurations = {
       laptop = (import ./laptop/laptop.nix { inherit nixpkgs inputs; });

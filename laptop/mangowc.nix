@@ -52,7 +52,7 @@ in
       fadein_begin_opacity=0;
       fadeout_begin_opacity=0.5;
 
-      allow_tearing = 2;
+      allow_tearing = 1;
 
       focuscolor = "0x4d4e51ff";
       bordercolor = "0x00000000";
@@ -120,17 +120,16 @@ in
 
       keymode = {
         resize = {
-
           bind = [
-            "NONE,Up,resizewin,0,-10"
-            "NONE,Down,resizewin,0,+10"
-            "NONE,Left,resizewin,-10,0"
-            "NONE,Right,resizewin,+10,0"
+            "NONE,Up,resizewin,+0,-50"
+            "NONE,Down,resizewin,+0,+50"
+            "NONE,Left,resizewin,-50,+0"
+            "NONE,Right,resizewin,+50,+0"
 
-            "NONE+Shift,Up,resizewin,0,-50"
-            "NONE+Shift,Down,resizewin,0,+50"
-            "NONE+Shift,Left,resizewin,-50,0"
-            "NONE+Shift,Right,resizewin,+50,0"
+            "NONE+Shift,Up,movewin,+0,-50"
+            "NONE+Shift,Down,movewin,+0,+50"
+            "NONE+Shift,Left,movewin,-50,+0"
+            "NONE+Shift,Right,movewin,+50,+0"
 
             "NONE,Escape,setkeymode,default"
             "${mod},Z,setkeymode,default"
