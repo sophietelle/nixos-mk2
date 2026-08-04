@@ -28,9 +28,6 @@
         };
       };
 
-      services.usbmuxd.enable = true;
-
-      hardware.opentabletdriver.enable = true;
       hardware.ledger.enable = true;
       boot.kernelPackages = pkgs.linuxPackages_xanmod;
 
