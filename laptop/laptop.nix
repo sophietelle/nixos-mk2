@@ -110,11 +110,8 @@ nixpkgs.lib.nixosSystem {
         enable = true;
         useRoutingFeatures = "both";
       };
+      
       networking.nftables.enable = true;
-
-      systemd.services.tailscaled.serviceConfig.Environment = [
-        "TS_DEBUG_FIREWALL_MODE=nftables"
-      ];
 
       # - Faster boot times
 
