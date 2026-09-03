@@ -10,16 +10,30 @@
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "usbhid" ];
   boot.initrd.kernelModules = [ ];
+  boot.supportedFilesystems = [ "btrfs" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/3368cc17-34f9-4feb-bbf7-75dca0c2aad1";
-      fsType = "ext4";
+    { device = "/dev/disk/by-label/NIXVOL";
+      fsType = "btrfs";
+      options = [ "noatime" "compress=zstd:1" "subvol=root" ];
+    };
+
+  fileSystems."/nix" =
+    { device = "/dev/disk/by-label/NIXVOL";
+      fsType = "btrfs";
+      options = [ "noatime" "compress=zstd:1" "subvol=nix" ];
+    };
+
+  fileSystems."/home" =
+    { device = "/dev/disk/by-label/NIXVOL";
+      fsType = "btrfs";
+      options = [ "noatime" "compress=zstd:1" "subvol=home" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/016D-97E5";
+    { device = "/dev/disk/by-label/NIXBOOT";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };

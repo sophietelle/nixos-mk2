@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 
 let
   mod = "SUPER";
@@ -7,12 +7,21 @@ let
   explorer = "thunar";
   launcher = "fuzzel";
 
-  screenshot = "grimshot copy screen";
-  windowshot = "grimshot copy anything";
+  cshot = inputs.cshot.packages.${pkgs.system}.default;
+  wl-copy = lib.getExe' pkgs.wl-clipboard "wl-copy";
+
+  screenshot = "${lib.getExe cshot} - | ${wl-copy}";
+  windowshot = "${pkgs.writeShellScript "cshot-window" ''
+    set -euo pipefail
+    client=$(mmsg get focusing-client)
+    monitor=$(printf '%s' "$client" | ${lib.getExe pkgs.jq} -r '.monitor // empty')
+    geometry=$(printf '%s' "$client" | ${lib.getExe pkgs.jq} -r '"\(.x),\(.y),\(.x+.width),\(.y+.height)"')
+    [ -n "$monitor" ] && [ -n "$geometry" ] && ${lib.getExe cshot} --output "$monitor" --geometry "$geometry" - | ${wl-copy}
+  ''}";
 in
 {
   home.packages = with pkgs; [
-    sway-contrib.grimshot
+    cshot
   ];
 
   wayland.windowManager.mango = {
@@ -70,13 +79,16 @@ in
         "${mod},V,togglefloating"
         "${mod},J,switch_layout"
 
-        "NONE,Print,spawn,${screenshot}"
+        "NONE,Print,spawn_shell,${screenshot}"
         "ALT,Print,spawn,${windowshot}"
 
         "${mod}+SHIFT,Up,exchange_client,up"
         "${mod}+SHIFT,Down,exchange_client,down"
         "${mod}+SHIFT,Left,exchange_client,left"
         "${mod}+SHIFT,Right,exchange_client,right"
+
+        "${mod}+CTRL+ALT+SHIFT,Left,tagmon,left"
+        "${mod}+CTRL+ALT+SHIFT,Right,tagmon,right"
 
         "${mod},Up,focusdir,up"
         "${mod},Down,focusdir,down"

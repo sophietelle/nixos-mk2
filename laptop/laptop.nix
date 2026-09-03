@@ -1,4 +1,6 @@
-{ nixpkgs, inputs, ... }: nixpkgs.lib.nixosSystem {
+{ nixpkgs, inputs, ... }:
+
+nixpkgs.lib.nixosSystem {
   specialArgs = { inherit inputs; };
   modules = [
     ./hardware-configuration.nix
@@ -7,18 +9,94 @@
     inputs.mango.nixosModules.mango
     inputs.stylix.nixosModules.stylix
 
-    (import ../presets/basics.nix {
-      hostName = "laptop";
-      stateVersion = "25.11";
-      enableFlakes = true;
-      allowUnfree = true;
-    })
+    ./stylix.nix
+
+    {
+      nixpkgs.overlays = [
+        inputs.nix-cachyos-kernel.overlays.pinned
+        inputs.ida-pro-overlay.overlays.default
+        inputs.helium.overlays.default
+      ];
+    }
 
     ({ config, pkgs, lib, ... }: {
+      # - Hello, world!
+
+      networking.hostName = "fa506icb";
+      system.stateVersion = "26.05";
+
+      # - Nix settings
+
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      nixpkgs.config.allowUnfree = true;
+      programs.nix-ld.enable = true;
+
       environment.systemPackages = with pkgs; [
         neovim wget curl git gh zip unzip
         python3 bun
+        mangohud
+
+        # Bluetooth GUI manager
+        bluejay
       ];
+
+      # - Boot process
+
+      boot = {
+        loader = {
+          systemd-boot.enable = true;
+          efi.canTouchEfiVariables = true;
+
+          timeout = 0;
+        };
+
+        plymouth = {
+          enable = true;
+          theme = "bgrt";
+        };
+
+        kernelParams = [ "8250.nr_uarts=0" "rd.systemd.show_status=auto" "quiet" "fbcon=vc:2-6" ];
+        kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto-x86_64-v3;
+      };
+
+      # - Fuck sudo on god
+
+      security = {
+        sudo.enable = false;
+        doas = {
+          enable = true;
+          extraRules = [
+            {
+               groups = [ "wheel" ];
+               keepEnv = true;
+            }
+          ];
+        };
+      };
+
+      # - Greeter
+
+      services = {
+        greetd = {
+          enable = true;
+          greeterManagesPlymouth = true;
+        };
+
+        displayManager.regreet.enable = true;
+      };
+
+      # - Networking & VPNs
+
+      networking.networkmanager.enable = true;
+
+      boot.kernel.sysctl = {
+        "net.core.default_qdisc" = "cake";
+
+        # Also required for Waydroid!
+        "net.ipv4.ip_forward" = 1;
+        "net.ipv4.conf.all.forwarding" = 1;
+        "net.ipv6.conf.all.forwarding" = 1;
+      };
 
       programs.throne = {
         enable = true;
@@ -28,24 +106,83 @@
         };
       };
 
-      hardware.ledger.enable = true;
-      boot.kernelPackages = pkgs.linuxPackages_xanmod;
-
-      # ---
-
-      virtualisation.waydroid = {
+      services.tailscale = {
         enable = true;
-        package = pkgs.waydroid-nftables;
+        useRoutingFeatures = "both";
+      };
+      networking.nftables.enable = true;
+
+      systemd.services.tailscaled.serviceConfig.Environment = [
+        "TS_DEBUG_FIREWALL_MODE=nftables"
+      ];
+
+      # - Faster boot times
+
+      systemd.network.wait-online.enable = false;
+      systemd.services.NetworkManager-wait-online.enable = false;
+      boot.initrd.systemd.network.wait-online.enable = false;
+      systemd.units."dev-tpm0.device".wantedBy = lib.mkForce [];
+      systemd.units."waydroid-container.service".wantedBy = lib.mkForce [];
+
+      # - Virtualization
+
+      virtualisation.podman.enable = true;
+
+      # virtualisation.waydroid = {
+      #   enable = true;
+      #   package = pkgs.waydroid-nftables;
+      # };
+
+      # - Hardware
+
+      services = {
+        asusd.enable = true; # fans go whoosh
+        usbmuxd.enable = true;
+        illum.enable = true;
+
+        upower.enable = true;
+        power-profiles-daemon.enable = true;
       };
 
-      networking.firewall.trustedInterfaces = [ "waydroid0" ];
-      boot.kernel.sysctl = { "net.ipv4.ip_forward" = 1; "net.ipv4.conf.all.forwarding" = 1; "net.ipv6.conf.all.forwarding" = 1; };
+      hardware = {
+        ledger.enable = true;
+        opentabletdriver.enable = true;
+        bluetooth = {
+          enable = true;
+          powerOnBoot = true;
+        };
+      };
 
-      # ---
+      # - Graphics
+
+      hardware = {
+        graphics = {
+          enable = true;
+          enable32Bit = true;
+        };
+
+        nvidia = {
+          modesetting.enable = true;
+          powerManagement.enable = true;
+          open = true;
+        };
+      };
+
+      services.xserver.videoDrivers = [ "nvidia" ];
+
+      environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card2";
+
+      # - GUI
+
+      programs.mango.enable = true;
+
+      # - Remote access
 
       services.sunshine = {
         enable = true;
         autoStart = true;
+        capSysAdmin = true;
+        openFirewall = true;
       };
 
       services.openssh = {
@@ -53,146 +190,101 @@
         openFirewall = true;
       };
 
-      networking.networkmanager.wifi.powersave = false;
-      networking.firewall.allowedUDPPorts = [ 67 68 47998 47999 48000 ];
-      networking.firewall.allowedTCPPorts = [ 53317 47984 47989 47990 48010 ];
+      networking.firewall.allowedUDPPorts = [ config.services.tailscale.port 27015 ];
+      networking.firewall.allowedTCPPorts = [ 53317 27015 ];
 
-      # ---
+      # - OBS
+
+      programs.obs-studio = {
+        enable = true;
+        plugins = with pkgs.obs-studio-plugins; [ wlrobs obs-vaapi obs-vkcapture ];
+        package = ( pkgs.obs-studio.override { cudaSupport = true; } );
+      };
+
+      # - Explorer (Thunar)
 
       services.gvfs.enable = true; # Trash folder
       programs.gphoto2.enable = true; # Camera access
       services.tumbler.enable = true; # Thumbnails
       programs.xfconf.enable = true; # Explorer preferences
 
-      # ---
+      # - Finally, my user & home
 
-      programs.nix-ld.enable = true;
-      stylix.targets.chromium.colors.enable = false;
+      programs.steam = {
+        enable = true;
+        extraCompatPackages = with pkgs; [
+          proton-ge-bin
+        ];
+      };
 
-      virtualisation.podman.enable = true;
+      users.users.sophie = {
+        isNormalUser = true;
+        description = "Sophie";
+        extraGroups = [ "networkmanager" "wheel" "audio" ];
+      };
 
-      security.rtkit.enable = true;
-      boot.kernel.sysctl."kernel.sched_rt_runtime_us" = -1;
+      home-manager = {
+        useGlobalPkgs = true;
+        extraSpecialArgs = { inherit inputs; };
 
-      # ---
+        users.sophie = { pkgs, ... }: {
+          home.stateVersion = "26.05";
 
+          imports = [
+            inputs.mango.hmModules.mango
+            ./mangowc.nix
+            ./zed.nix
 
-      boot.kernelParams = [ "8250.nr_uarts=0" ];
-      systemd.units."dev-tpm0.device".wantedBy = lib.mkForce [];
-      systemd.units."waydroid-container.service".wantedBy = lib.mkForce [];
-    })
+            ({ inputs, ... }: {
+              stylix.targets = {
+                zed.enable = false;
+                firefox.enable = false;
+              };
 
-    (import ../presets/boot.nix {
-      systemdBoot = true;
-      usePlymouth = true;
-      seamlessBoot = true;
-    })
-    (import ../presets/networking.nix {
-      enable = true;
-      disableWaitOnline = true;
-    })
-    (import ../presets/power-management.nix {
-      enablePPD = true;
-      enableUpower = true;
-      enablePowertopDaemon = false;
-      autoSuspendTimeout = 60;
-    })
-    (import ../presets/display.nix {
-      enableBrightnessKeys = true;
-    })
-    (import ../presets/bluetooth.nix {
-      enable = true;
-      useOverskride = true;
-    })
-    (import ../presets/greetd.nix {
-      enable = true;
-      useRegreet = true;
-      seamlessBoot = true;
-    })
-    (import ../presets/doas.nix {
-      replaceSudo = false;
-      allowWheel = true;
-      keepEnv = true;
-      noPass = true;
-    })
-    (import ../presets/graphics.nix {
-      enable = true;
-      nvidia = true;
-      disablePrime = false;
-      enableNvidiaModesetting = true;
-    })
-    (import ../presets/mangowc.nix {
-      enable = true;
-    })
-    (import ../presets/obs.nix {
-      enable = true;
-      useCUDA = true;
-      useVirtualCamera = true;
-      plugins = [ "wlrobs" "obs-vaapi" "obs-vkcapture" ];
-    })
+              programs = {
+                home-manager.enable = true;
+                alacritty.enable = true;
 
-    (import ./stylix.nix)
+                fastfetch = {
+                  enable = true;
+                  settings = import ./fastfetch.nix;
+                };
 
-    ({ pkgs, lib, inputs, ... }: {
-      nixpkgs.overlays = [
-        inputs.ida-pro-overlay.overlays.default
-        inputs.helium.overlays.default
-      ];
+                fuzzel = {
+                  enable = true;
+                  settings = (import ./fuzzel.nix) { inherit lib; };
+                };
+              };
 
-      environment.systemPackages = [
-        (pkgs.ida-pro.overrideAttrs (old: {
-          installPhase = lib.replaceStrings
-          [ "# Link the exported libraries to the output." ]
-          [ ''
-            pushd $IDADIR
-            ${pkgs.python3}/bin/python3 ${./ida/these_bitches_change_up_like_the_season.py} --oneshot
-            popd
-          '' ]
-          old.installPhase;
-        }))
-      ];
-    })
+              home.packages = with pkgs; [
+                android-tools scrcpy
+                telegram-desktop
+                spotify mpv
+                thunar thunar-archive-plugin
+                helium
+                osu-lazer-bin
+                imv
 
-    (import ../presets/home/home.nix {
-      username = "sophie";
-      displayName = "Sophie";
-      stateVersion = "25.11";
+                (pkgs.ida-pro.overrideAttrs (old: {
+                  installPhase = lib.replaceStrings
+                  [ "# Link the exported libraries to the output." ]
+                  [ ''
+                    # https://i.ibb.co/pjSkNK1p/image.png
+                    pushd $IDADIR
+                    ${pkgs.python3}/bin/python3 ${./ida/these_bitches_change_up_like_the_season.py} --oneshot
+                    popd
+                  '' ]
+                  old.installPhase;
+                }))
 
-      hmImports = [
-        inputs.mango.hmModules.mango
-
-        ./mangowc.nix
-        ./fastfetch.nix
-        ./fuzzel.nix
-        ./zed.nix
-
-        ({ inputs, ... }: {
-          stylix.targets = {
-            zed.enable = false;
-            firefox.enable = false;
-          };
-
-          programs = {
-            home-manager.enable = true;
-            alacritty.enable = true;
-            # firefox.enable = true;
-          };
-        })
-      ];
-
-      extraPackages = pkgs: with pkgs; [
-        android-tools scrcpy
-        steam telegram-desktop
-        spotify mpv
-        thunar thunar-archive-plugin
-        helium
-        osu-lazer-bin
-        imv
-
-        (prismlauncher.override {
-          jdks = [ zulu8 zulu21 ];
-        })
-      ];
+                (prismlauncher.override {
+                  jdks = [ zulu8 zulu21 ];
+                })
+              ];
+            })
+          ];
+        };
+      };
     })
   ];
 }

@@ -1,29 +1,21 @@
-{ lib, ... }:
+{ lib, ... }: {
+  main = {
+    prompt = "\"\"";
 
-{
-  programs.fuzzel = {
-    enable = true;
+    horizontal-pad = 5;
+    vertical-pad = 5;
+    inner-pad = 10;
+    lines = 8;
+    line-height = 14;
 
-    settings = {
-      main = {
-        prompt = "\"\"";
+    font = lib.mkForce "serif:size=8";
+  };
 
-        horizontal-pad = 5;
-        vertical-pad = 5;
-        inner-pad = 10;
-        lines = 8;
-        line-height = 14;
+  colors = {
+    border = lib.mkForce "ffffffff";
+  };
 
-        font = lib.mkForce "serif:size=8";
-      };
-
-      colors = {
-        border = lib.mkForce "ffffffff";
-      };
-
-      border = {
-        radius = 0;
-      };
-    };
+  border = {
+    radius = 0;
   };
 }
