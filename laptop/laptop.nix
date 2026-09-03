@@ -110,7 +110,7 @@ nixpkgs.lib.nixosSystem {
         enable = true;
         useRoutingFeatures = "both";
       };
-      
+
       networking.nftables.enable = true;
 
       # - Faster boot times
@@ -167,6 +167,7 @@ nixpkgs.lib.nixosSystem {
 
       services.xserver.videoDrivers = [ "nvidia" ];
 
+      # Render compositor on iGPU to get that sweet 0.0001ms less latency
       environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card2";
 
       # - GUI
