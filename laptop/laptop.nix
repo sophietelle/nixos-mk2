@@ -58,7 +58,16 @@ nixpkgs.lib.nixosSystem {
 
       boot = {
         loader = {
-          systemd-boot.enable = true;
+          limine = {
+            enable = true;
+            secureBoot.enable = true;
+            extraConfig = ''
+              timeout: 0
+              quiet: yes
+              terse: yes
+            '';
+          };
+
           efi.canTouchEfiVariables = true;
 
           timeout = 0;
