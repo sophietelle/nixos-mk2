@@ -161,6 +161,12 @@ nixpkgs.lib.nixosSystem {
         usbmuxd.enable = true;
         illum.enable = true;
 
+        # Wacom flash mode
+        udev.extraRules = ''
+          KERNEL=="hidraw*", ATTRS{idVendor}=="056a", TAG+="uaccess"
+          SUBSYSTEM=="usb", ATTR{idVendor}=="0ac3", TAG+="uaccess"
+        '';
+
         upower.enable = true;
         power-profiles-daemon.enable = true;
       };
