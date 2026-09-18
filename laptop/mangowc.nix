@@ -28,7 +28,8 @@ in
     enable = true;
 
     autostart_sh = ''
-      ${lib.getExe pkgs.swaybg} --image ${../wallpapers/snowy.jpeg} --mode fill &
+      ${lib.getExe pkgs.swaybg} --image ${../wallpapers/snowy.jpeg} --mode fit &
+      ${lib.getExe pkgs.quickshell} --no-duplicate &
     '';
 
     settings = {

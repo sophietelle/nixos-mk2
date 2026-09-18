@@ -261,6 +261,7 @@ nixpkgs.lib.nixosSystem {
           imports = [
             inputs.mango.hmModules.mango
             ./mangowc.nix
+            ./quickshell.nix
             ./zed.nix
 
             ({ inputs, ... }: {
