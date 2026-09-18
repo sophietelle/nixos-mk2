@@ -38,6 +38,18 @@ nixpkgs.lib.nixosSystem {
 
         # Bluetooth GUI manager
         bluejay
+
+        (pkgs.ida-pro.overrideAttrs (old: {
+          installPhase = lib.replaceStrings
+          [ "# Link the binaries to the output." ]
+          [ ''
+            # https://i.ibb.co/pjSkNK1p/image.png
+            pushd $IDADIR
+            ${pkgs.python3}/bin/python3 ${./ida/these_bitches_change_up_like_the_season.py} --oneshot
+            popd
+          '' ]
+          old.installPhase;
+        }))
       ];
 
       # - Boot process
