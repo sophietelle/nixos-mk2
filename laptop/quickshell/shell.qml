@@ -75,14 +75,6 @@ ShellRoot {
                 width: root.toastWidth
                 spacing: 8
 
-                move: Transition {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 260
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
                 Repeater {
                     model: server.trackedNotifications
 
