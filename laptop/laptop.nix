@@ -147,6 +147,7 @@ nixpkgs.lib.nixosSystem {
       # - Virtualization
 
       virtualisation.podman.enable = true;
+      environment.sessionVariables.DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
 
       # virtualisation.waydroid = {
       #   enable = true;
