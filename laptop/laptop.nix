@@ -248,7 +248,7 @@ nixpkgs.lib.nixosSystem {
       users.users.sophie = {
         isNormalUser = true;
         description = "Sophie";
-        extraGroups = [ "networkmanager" "wheel" "audio" ];
+        extraGroups = [ "libvirtd" "networkmanager" "wheel" "audio" ];
       };
 
       home-manager = {
