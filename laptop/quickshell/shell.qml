@@ -53,8 +53,12 @@ ShellRoot {
             exclusionMode: ExclusionMode.Ignore
             visible: server.trackedNotifications.values.length > 0
 
+            // Fixed size, deliberately: sizing the surface to the stack made it
+            // resize on every add and every dismiss, and a layer-shell surface
+            // that resizes drops a frame, so the cards blinked. The window is
+            // transparent and masked to the cards, so the unused space is free.
             implicitWidth: root.toastWidth + root.shadowPad + root.screenMargin
-            implicitHeight: column.implicitHeight + root.shadowPad + root.screenMargin
+            implicitHeight: panel.screen.height
 
             // Only the toasts themselves take clicks, everything else
             // (padding + shadow bleed) falls through to the window below.
