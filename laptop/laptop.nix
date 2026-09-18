@@ -54,6 +54,8 @@ nixpkgs.lib.nixosSystem {
 
       # - Boot process
 
+      services.flatpak.enable = true;
+
       boot = {
         loader = {
           systemd-boot.enable = true;
