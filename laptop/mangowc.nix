@@ -29,6 +29,7 @@ in
 
     autostart_sh = ''
       ${lib.getExe pkgs.swaybg} --image ${../wallpapers/ame.png} --mode fit &
+      ${lib.getExe pkgs.quickshell} --no-duplicate &
     '';
 
     settings = {
