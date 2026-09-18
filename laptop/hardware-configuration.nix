@@ -20,7 +20,7 @@
       options = [ "noatime" "compress=zstd:1" "subvol=root" ];
     };
 
-  fileSystems."/nix" =
+  fileSystems."/nix/store" =
     { device = "/dev/disk/by-label/NIXVOL";
       fsType = "btrfs";
       options = [ "noatime" "compress=zstd:1" "subvol=nix" ];
