@@ -293,18 +293,6 @@ nixpkgs.lib.nixosSystem {
                 osu-lazer-bin
                 imv
 
-                (pkgs.ida-pro.overrideAttrs (old: {
-                  installPhase = lib.replaceStrings
-                  [ "# Link the exported libraries to the output." ]
-                  [ ''
-                    # https://i.ibb.co/pjSkNK1p/image.png
-                    pushd $IDADIR
-                    ${pkgs.python3}/bin/python3 ${./ida/these_bitches_change_up_like_the_season.py} --oneshot
-                    popd
-                  '' ]
-                  old.installPhase;
-                }))
-
                 (prismlauncher.override {
                   jdks = [ zulu8 zulu21 ];
                 })
