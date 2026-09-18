@@ -10,8 +10,8 @@ Item {
 
     required property var notification
 
-    property int cardWidth: 380
-    property int padding: 16
+    property int cardWidth: 368
+    property int padding: 13
 
     implicitWidth: cardWidth
     implicitHeight: card.implicitHeight
@@ -44,8 +44,7 @@ Item {
         shadowColor: "#000000"
         shadowOpacity: 0.9
         shadowBlur: 1.0
-        blurMax: 32
-        shadowVerticalOffset: 8
+        blurMax: 24
     }
 
     Item {
@@ -62,9 +61,7 @@ Item {
             implicitHeight: layout.implicitHeight + root.padding * 2
 
             color: "#000000"
-            radius: 26
-            border.width: 1
-            border.color: "#151516"
+            radius: 22
 
             RowLayout {
                 id: layout
@@ -77,15 +74,15 @@ Item {
                     rightMargin: root.padding
                 }
 
-                spacing: 12
+                spacing: 11
 
                 Item {
                     id: avatar
 
                     Layout.alignment: Qt.AlignVCenter
 
-                    implicitWidth: 44
-                    implicitHeight: 44
+                    implicitWidth: 34
+                    implicitHeight: 34
 
                     // Whatever picture the notification carries: a contact photo
                     // or album art if the app sent one, otherwise its own icon.
@@ -134,7 +131,7 @@ Item {
                             visible: mainIcon.status !== Image.Ready && fillIcon.status !== Image.Ready
                             text: root.notification.appName.charAt(0).toUpperCase()
                             color: "#E0E1E4"
-                            font.pixelSize: 19
+                            font.pixelSize: 15
                             font.weight: Font.DemiBold
                         }
 
@@ -175,8 +172,8 @@ Item {
                         // Opacity rather than visibility: an invisible badge
                         // never loads its icon, so it could never become Ready.
                         opacity: avatar.hasPfp && badge.status === Image.Ready ? 1 : 0
-                        width: 21
-                        height: 21
+                        width: 17
+                        height: 17
                         radius: width / 2
                         color: card.color
 
@@ -184,7 +181,7 @@ Item {
                             id: badge
 
                             anchors.centerIn: parent
-                            implicitSize: 16
+                            implicitSize: 13
                             source: avatar.appIcon
                         }
                     }
@@ -200,7 +197,7 @@ Item {
                         visible: text !== ""
                         text: root.notification.summary
                         color: "#FFFFFF"
-                        font.pixelSize: 14
+                        font.pixelSize: 13
                         font.weight: Font.DemiBold
                         elide: Text.ElideRight
                     }
@@ -212,7 +209,7 @@ Item {
                         visible: text !== ""
                         text: root.notification.body
                         color: "#A9AEB4"
-                        font.pixelSize: 12
+                        font.pixelSize: 11
                         textFormat: Text.StyledText
                         wrapMode: Text.WordWrap
                         maximumLineCount: 4

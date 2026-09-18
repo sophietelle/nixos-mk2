@@ -8,10 +8,14 @@ import Quickshell.Services.Notifications
 ShellRoot {
     id: root
 
-    // Width of a single toast. The window is padded around it so the drop
-    // shadow has room to bleed without being clipped by the surface.
-    readonly property int toastWidth: 380
-    readonly property int pad: 32
+    readonly property int toastWidth: 368
+
+    // Room for the drop shadow to bleed on the sides facing into the screen.
+    readonly property int shadowPad: 28
+
+    // Gap between the card and the screen corner. It can be smaller than the
+    // shadow needs: whatever spills past it falls off the screen edge anyway.
+    readonly property int screenMargin: 10
 
     NotificationServer {
         id: server
@@ -49,8 +53,8 @@ ShellRoot {
             exclusionMode: ExclusionMode.Ignore
             visible: server.trackedNotifications.values.length > 0
 
-            implicitWidth: root.toastWidth + root.pad * 2
-            implicitHeight: column.implicitHeight + root.pad * 2
+            implicitWidth: root.toastWidth + root.shadowPad + root.screenMargin
+            implicitHeight: column.implicitHeight + root.shadowPad + root.screenMargin
 
             // Only the toasts themselves take clicks, everything else
             // (padding + shadow bleed) falls through to the window below.
@@ -64,12 +68,12 @@ ShellRoot {
                 anchors {
                     right: parent.right
                     bottom: parent.bottom
-                    rightMargin: root.pad
-                    bottomMargin: root.pad
+                    rightMargin: root.screenMargin
+                    bottomMargin: root.screenMargin
                 }
 
                 width: root.toastWidth
-                spacing: 10
+                spacing: 8
 
                 move: Transition {
                     NumberAnimation {
