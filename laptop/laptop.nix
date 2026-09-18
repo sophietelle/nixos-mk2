@@ -285,6 +285,7 @@ nixpkgs.lib.nixosSystem {
               };
 
               home.packages = with pkgs; [
+                ayugram-desktop
                 android-tools scrcpy
                 telegram-desktop
                 spotify mpv
