@@ -283,13 +283,6 @@ nixpkgs.lib.nixosSystem {
                   };
                 };
 
-                wpaperd = {
-                  enable = true;
-                  settings = {
-                    eDP-1.path = ../wallpapers/snowy.jpeg;
-                  };
-                };
-
                 quickshell = {
                   enable = true;
                   systemd.enable = true;
@@ -302,6 +295,15 @@ nixpkgs.lib.nixosSystem {
                 fuzzel = {
                   enable = true;
                   settings = (import ./fuzzel.nix) { inherit lib; };
+                };
+              };
+
+              services = {
+                wpaperd = {
+                  enable = true;
+                  settings = {
+                    eDP-1.path = ../wallpapers/snowy.jpeg;
+                  };
                 };
               };
 
