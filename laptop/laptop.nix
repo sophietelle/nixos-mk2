@@ -16,6 +16,7 @@ nixpkgs.lib.nixosSystem {
         inputs.nix-cachyos-kernel.overlays.pinned
         inputs.ida-pro-overlay.overlays.default
         inputs.helium.overlays.default
+        inputs.claude-desktop.overlays.default
       ];
     }
 
@@ -309,6 +310,7 @@ nixpkgs.lib.nixosSystem {
               };
 
               home.packages = with pkgs; [
+                claude-desktop
                 ayugram-desktop
                 android-tools scrcpy
                 telegram-desktop

@@ -4,6 +4,11 @@
 
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
 
+    claude-desktop = {
+      url = "github:aaddrick/claude-desktop-debian";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,17 +20,17 @@
     };
 
     mango = {
-      url = "github:mangowm/mango?tag=v0.14.4";
+      url = "github:mangowm/mango?tag=v0.17.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     helium = {
-      url = "github:schembriaiden/helium-browser-nix-flake/cd040a293858b33db38d3685a24b86b891ff6abc";
+      url = "github:schembriaiden/helium-browser-nix-flake/14a8f68137d4db62213555937f23ad95e7f8c4e6";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     ida-pro-overlay = {
-      url = "github:msanft/ida-pro-overlay";
+      url = "github:msanft/ida-pro-overlay/fae2e9edae8728e6b7b31e2542b774caa6c21e5f";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -36,8 +41,8 @@
   };
 
   nixConfig = {
-    substituters = [ "https://cache.nixos.org/" "https://attic.xuyh0120.win/lantian" ];
-    trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc=" ];
+    extra-substituters = [ "https://attic.xuyh0120.win/lantian" ];
+    extra-trusted-public-keys = [ "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc=" ];
   };
 
   outputs = { self, nixpkgs, ... } @ inputs: {
