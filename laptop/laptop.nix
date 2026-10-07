@@ -261,7 +261,6 @@ nixpkgs.lib.nixosSystem {
           imports = [
             inputs.mango.hmModules.mango
             ./mangowc.nix
-            ./quickshell.nix
             ./zed.nix
 
             ({ inputs, ... }: {
@@ -277,6 +276,16 @@ nixpkgs.lib.nixosSystem {
                 fastfetch = {
                   enable = true;
                   settings = import ./fastfetch.nix;
+                };
+
+
+                quickshell = {
+                  enable = true;
+                  systemd.enable = true;
+                  configs = {
+                    default = ./quickshell;
+                  };
+                  activeConfig = "default";
                 };
 
                 fuzzel = {
