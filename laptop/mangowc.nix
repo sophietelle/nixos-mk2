@@ -5,7 +5,7 @@ let
 
   terminal = "alacritty";
   explorer = "thunar";
-  launcher = "fuzzel";
+  launcher = "vicinae open";
 
   cshot = inputs.cshot.packages.${pkgs.system}.default;
   wl-copy = lib.getExe' pkgs.wl-clipboard "wl-copy";
@@ -27,23 +27,18 @@ in
   wayland.windowManager.mango = {
     enable = true;
 
-    autostart_sh = ''
-      ${lib.getExe pkgs.swaybg} --image ${../wallpapers/snowy.jpeg} --mode fit &
-      ${lib.getExe pkgs.quickshell} --no-duplicate &
-    '';
-
     settings = {
-      sloppyfocus = true;
+      sloppy_focus = true;
 
-      borderpx = 0;
+      border_px = 0;
 
       xkb_rules_layout = "us,ru,ua";
       xkb_rules_options = "grp:caps_toggle";
 
-      gappih = 0;
-      gappiv = 0;
-      gappoh = 0;
-      gappov = 0;
+      gap_inner_horizontal = 0;
+      gap_inner_vertical = 0;
+      gap_outer_horizontal = 0;
+      gap_outer_vertical = 0;
 
       animation_type_open="zoom";
       animation_type_close="zoom";
@@ -59,15 +54,15 @@ in
 
       animation_fade_in=1;
       animation_fade_out=1;
-      fadein_begin_opacity=0;
-      fadeout_begin_opacity=0.5;
+      fade_in_begin_opacity=0;
+      fade_out_begin_opacity=0.5;
 
       allow_tearing = 1;
 
-      focuscolor = "0x4d4e51ff";
-      bordercolor = "0x00000000";
-      urgentcolor = "0xeb4056ff";
-      rootcolor = "0x18191bff";
+      focus_color = "0x4d4e51ff";
+      border_color = "0x00000000";
+      urgent_color = "0xeb4056ff";
+      root_color = "0x18191bff";
 
       unfocused_opacity = 0.9;
 
@@ -123,7 +118,6 @@ in
         "NONE,XF86AudioMute,spawn,wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         "SHIFT,XF86AudioMute,spawn,wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
         "NONE,XF86AudioNext,spawn,playerctl next"
-        "NONE,XF86AudioPause,spawn,playerctl play-pause"
         "NONE,XF86AudioPlay,spawn,playerctl play-pause"
         "NONE,XF86AudioPrev,spawn,playerctl previous"
 
@@ -131,7 +125,7 @@ in
         "${mod}+SHIFT,R,reload_config"
       ];
 
-      keymode = {
+      key_mode = {
         resize = {
           bind = [
             "NONE,Up,resizewin,+0,-50"

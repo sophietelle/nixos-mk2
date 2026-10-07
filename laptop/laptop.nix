@@ -278,6 +278,20 @@ nixpkgs.lib.nixosSystem {
                   settings = import ./fastfetch.nix;
                 };
 
+                vicinae = {
+                  enable = true;
+                  systemd.enable = true;
+                  settings = {
+                    providers.files.enable = false;
+                  };
+                };
+
+                wpaperd = {
+                  enable = true;
+                  settings = {
+                    eDP-1.path = ../wallpapers/snowy.jpeg;
+                  };
+                };
 
                 quickshell = {
                   enable = true;
