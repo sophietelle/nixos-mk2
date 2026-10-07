@@ -6,7 +6,7 @@
     mutableUserSettings = true;
     userSettings = {
       languages = {
-        TypeScript = { language_servers = [ "tsgo" ]; };
+        TypeScript = { language_servers = [ "vtsls" ]; };
         Nix = { language_servers = [ "nixd" "!nil" ]; };
       };
 

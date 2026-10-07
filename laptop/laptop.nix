@@ -29,8 +29,10 @@ nixpkgs.lib.nixosSystem {
       # - Nix settings
 
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      nix.registry.nixpkgs.flake = inputs.nixpkgs;
       nixpkgs.config.allowUnfree = true;
       programs.nix-ld.enable = true;
+      environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
       environment.systemPackages = with pkgs; [
         neovim wget curl git gh zip unzip
@@ -161,12 +163,6 @@ nixpkgs.lib.nixosSystem {
         asusd.enable = true; # fans go whoosh
         usbmuxd.enable = true;
         illum.enable = true;
-
-        # Wacom flash mode
-        udev.extraRules = ''
-          KERNEL=="hidraw*", ATTRS{idVendor}=="056a", TAG+="uaccess"
-          SUBSYSTEM=="usb", ATTR{idVendor}=="0ac3", TAG+="uaccess"
-        '';
 
         upower.enable = true;
         power-profiles-daemon.enable = true;
@@ -312,12 +308,14 @@ nixpkgs.lib.nixosSystem {
               home.packages = with pkgs; [
                 claude-desktop
                 ayugram-desktop
+                playerctl
                 android-tools scrcpy
                 telegram-desktop
                 spotify mpv
                 thunar thunar-archive-plugin
                 helium
                 osu-lazer-bin
+                pavucontrol
                 imv
 
                 (prismlauncher.override {
