@@ -7,7 +7,7 @@ let
   explorer = "thunar";
   launcher = "vicinae open";
 
-  cshot = inputs.cshot.packages.${pkgs.system}.default;
+  cshot = inputs.cshot.packages.${pkgs.stdenv.hostPlatform.system}.default;
   wl-copy = lib.getExe' pkgs.wl-clipboard "wl-copy";
 
   screenshot = "${lib.getExe cshot} - | ${wl-copy}";
